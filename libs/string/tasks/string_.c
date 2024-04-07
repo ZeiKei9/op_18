@@ -2,7 +2,6 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
-#include <memory.h>
 #include <stdlib.h>
 #include "string_.h"
 
@@ -289,8 +288,6 @@ void numToSpace(char *source) {
             recPtr += sizeof(char);
         }
     }
-
-    recPtr += sizeof(char);
     *recPtr = '\0';
 }
 
@@ -354,15 +351,12 @@ int isOrdered(char *source) {
     WordDescriptor wordRes;
     WordDescriptor prevWordRes;
 
-
     if (!getWord(source, &prevWordRes)) {
         return 1;
     }
 
     source = prevWordRes.end;
     while (getWord(source, &wordRes)) {
-
-
         unsigned long len1 = prevWordRes.end - prevWordRes.begin;
         unsigned long len2 = wordRes.end - wordRes.begin;
         unsigned long min_len = len1;
@@ -375,7 +369,7 @@ int isOrdered(char *source) {
         if (res > 0) {
             return 0;
         }
-        if (len1 > len2) {
+        if ((res == 0) && (len1 > len2)) {
             return 0;
         }
 
@@ -469,6 +463,7 @@ void getMixedString(char *res, char *s1, char *s2) {
         }
 
     }
+    res -= sizeof(char);
     *res = '\0';
 }
 
@@ -486,6 +481,8 @@ void stringReverse(char *s) {
         *s = ' ';
         s += sizeof(char);
     }
+    s -= sizeof(char);
+    *s = '\0';
 }
 
 int hasWordLetter(WordDescriptor *word, char letter) {
@@ -545,17 +542,6 @@ void printWordBeforeFirstWordWithA(char *s) {
         case NOT_FOUND_A_WORD_WITH_A:
             printf("В строке нет слов с ’a’");
             break;
-    }
-}
-
-void assertString(const char *expected, char *got,char const *fileName, char const *funcName, int line) {
-    if (strcmp(expected, got)) {
-        fprintf(stderr, "File %s\n", fileName);
-        fprintf(stderr, "%s - failed on line %d\n", funcName, line);
-        fprintf(stderr, "Expected: \"%s\"\n", expected);
-        fprintf(stderr, "Got: \"%s\"\n\n", got);
-    } else {
-        fprintf(stderr, "%s - OK\n", funcName);
     }
 }
 
@@ -668,6 +654,7 @@ void getStringWithoutEndWords(char *s) {
             s += sizeof(char);
         }
     }
+    s -= sizeof(char);
     *s = '\0';
 }
 
@@ -697,7 +684,7 @@ int findWordBefore(char *s1, char *s2, char *res) {
 }
 
 void deletePalindromes(char *s) {
-    copy(s, getEndOfString(s), _stringBuffer);
+    copy(s, getEndOfString(s) + sizeof (char), _stringBuffer);
     clearBagOfWords(&_bag);
     getBagOfWords(&_bag, _stringBuffer);
 
@@ -713,6 +700,7 @@ void deletePalindromes(char *s) {
             s += sizeof(char);
         }
     }
+    s -= sizeof(char);
     *s = '\0';
 }
 
